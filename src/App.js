@@ -6,6 +6,7 @@ import AuthPage from "./pages/AuthPage";
 
 import { useContext } from "react";
 import AuthContext from "./store/auth-context";
+import HomePage from "./pages/HomePage";
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
   return (
     <Layout>
       <Routes>
+        {authCtx.isLoggedIn && <Route path="/" element={<HomePage />} exact />}
         {!authCtx.isLoggedIn && <Route path="/" element={<AuthPage />} exact />}
         {!authCtx.isLoggedIn && (<Route path="/auth" element={<AuthPage />} />)}
         {authCtx.isLoggedIn && <Route path="/profile" element={<UserProfile />} />}
