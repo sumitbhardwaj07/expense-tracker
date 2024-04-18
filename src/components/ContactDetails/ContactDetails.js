@@ -44,7 +44,7 @@ const ContactDetails = () => {
         }
       })
       .then((data) => {
-        console.log(data.idToken);
+        
         alert("updated successfully");
       })
       .catch((err) => {

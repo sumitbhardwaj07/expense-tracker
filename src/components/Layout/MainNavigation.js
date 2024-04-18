@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from "../../store/auth-context";
 import classes from "./MainNavigation.module.css";
+import VerifyEmailButton from "../Auth/VerifyEmail";
 
 const MainNavigation = () => {
   const authCtx = useContext(AuthContext);
@@ -33,6 +34,7 @@ const MainNavigation = () => {
               <button onClick={logoutHandler}>Logout</button>
             </li>
           )}
+          {isLoggedIn && <VerifyEmailButton />}
         </ul>
       </nav>
     </header>
