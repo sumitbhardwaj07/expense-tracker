@@ -1,0 +1,24 @@
+
+  .underline {
+    position: relative;
+  }
+  
+  .bottomBorder {
+    position: absolute; 
+    bottom: -5px;
+    left: 0;
+    width: 100%; 
+    border-bottom: 1px solid black; 
+  }
+.flexContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .alignRight {
+    text-align: right;
+    background-color: #f2f2f2; 
+    padding: 5px 10px;
+  }
+  

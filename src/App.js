@@ -7,6 +7,8 @@ import AuthPage from "./pages/AuthPage";
 import { useContext } from "react";
 import AuthContext from "./store/auth-context";
 import HomePage from "./pages/HomePage";
+import ContactDetails from "./components/ContactDetails/ContactDetails";
+
 
 
 function App() {
@@ -18,6 +20,7 @@ function App() {
         {!authCtx.isLoggedIn && <Route path="/" element={<AuthPage />} exact />}
         {!authCtx.isLoggedIn && (<Route path="/auth" element={<AuthPage />} />)}
         {authCtx.isLoggedIn && <Route path="/profile" element={<UserProfile />} />}
+        <Route path="/contactdetails" element={<ContactDetails />} />
         <Route path="*" element={<Navigate replace to="/"/>} />
       </Routes>
     </Layout>
