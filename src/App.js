@@ -11,6 +11,7 @@ import ContactDetails from "./components/ContactDetails/ContactDetails";
 
 
 
+
 function App() {
   const authCtx = useContext(AuthContext);
   return (
@@ -20,7 +21,7 @@ function App() {
         {!authCtx.isLoggedIn && <Route path="/" element={<AuthPage />} exact />}
         {!authCtx.isLoggedIn && (<Route path="/auth" element={<AuthPage />} />)}
         {authCtx.isLoggedIn && <Route path="/profile" element={<UserProfile />} />}
-        <Route path="/contactdetails" element={<ContactDetails />} />
+        {authCtx.isLoggedIn && <Route path="/contactdetails" element={<ContactDetails />} />}
         <Route path="*" element={<Navigate replace to="/"/>} />
       </Routes>
     </Layout>

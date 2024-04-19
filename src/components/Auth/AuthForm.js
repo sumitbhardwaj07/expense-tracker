@@ -1,6 +1,7 @@
 import { useContext, useRef, useState } from "react";
 import classes from "./AuthForm.module.css";
 import AuthContext from "../../store/auth-context";
+import ForgotPassword from "./ForgotPassword";
 
 const AuthForm = () => {
   const emailInputRef = useRef();
@@ -11,11 +12,18 @@ const AuthForm = () => {
 
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [enteredConfirmPassword, setEnteredConfirmPassword] = useState("");
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
   };
+  const forgotPasswordHandler = () => {
+    setShowForgotPassword(true);
+  };
+  const closeForgotPasswordHandler = () =>{
+    setShowForgotPassword(false);
+  }
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -29,6 +37,7 @@ const AuthForm = () => {
       return;
     }
 
+  
     setIsLoading(true);
     let url;
     if (isLogin) {
@@ -95,6 +104,15 @@ const AuthForm = () => {
             onChange={(event) => setEnteredConfirmPassword(event.target.value)}
           />
         </div>
+        <div>
+        <button
+            type="button"
+            className={classes.toggle}
+            onClick={forgotPasswordHandler}
+          >
+            Forgot password?
+          </button>
+        </div>
         <div className={classes.actions}>
           {!isLoading && (
             <button>{isLogin ? "Login" : "Create Account"}</button>
@@ -109,6 +127,8 @@ const AuthForm = () => {
           </button>
         </div>
       </form>
+
+      {showForgotPassword && <ForgotPassword onClose={closeForgotPasswordHandler}/>}
     </section>
   );
 };
