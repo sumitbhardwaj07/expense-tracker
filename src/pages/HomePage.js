@@ -4,6 +4,7 @@ import classes from "./HomePage.module.css"; // Import your CSS file for styling
 import { Link} from "react-router-dom";
 import { useState } from "react";
 import ContactDetails from "../components/ContactDetails/ContactDetails";
+import AddExpenseForm from "../components/AddExpense/AddExpenseForm";
 
 const HomePage = () => {
 
@@ -28,6 +29,7 @@ const HomePage = () => {
         </div>
       </Container>
       <div className={classes.bottomBorder}></div>
+      <AddExpenseForm />
       {showModal && <ContactDetails onClose={handleCloseModal} />}
     </div>
   );
