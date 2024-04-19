@@ -1,0 +1,44 @@
+/* EditExpenseForm.css */
+.edit-form-container {
+    background-color: #f5f5f5;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .edit-form-container h2 {
+    margin-bottom: 10px;
+  }
+  
+  .edit-form-container .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .edit-form-container label {
+    font-weight: bold;
+  }
+  
+  .edit-form-container input[type="number"],
+  .edit-form-container textarea,
+  .edit-form-container select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .edit-form-container button[type="submit"] {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .edit-form-container button[type="submit"]:hover {
+    background-color: #45a049;
+  }
+  
