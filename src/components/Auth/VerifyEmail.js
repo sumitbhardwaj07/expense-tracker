@@ -1,13 +1,17 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const VerifyEmailButton = () => {
+
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState(null);
-  const idToken = localStorage.getItem("token");
+  const idToken = useSelector((state) => state.auth.token);
+  
 
   const sendVerificationEmail = () => {
     setIsSending(true);
     setError(null);
+    
 
     fetch(
       "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyChMLQ7MPabwzdBlznppnvx0u0ClzjW2Sc",

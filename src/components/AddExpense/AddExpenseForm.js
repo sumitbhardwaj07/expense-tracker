@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
 import "./AddExpenseForm.css";
+import { useDispatch, useSelector } from "react-redux";
+import {addExpense, setEditingExpenses, setIsEditing, setExpenses} from "../../store/expensesReducer";
 import EditExpenseForm from "./EditExpenseForm";
 
 const AddExpenseForm = () => {
+  const dispatch = useDispatch();
+  const expenses = useSelector((state) => state.expenses.expenses);
+  const isEditing = useSelector((state) => state.expenses.isEditing); 
+  const editingExpense = useSelector((state) => state.expenses.editingExpense);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Food");
-  const [expenses, setExpenses] = useState([]);
-  const [editingExpense, setEditingExpense] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
+  //const [editingExpense, setEditingExpense] = useState(null);
+  //const [isEditing, setIsEditing] = useState(false);
 
   const fetchExpenses = () => {
     fetch(
@@ -31,7 +36,7 @@ const AddExpenseForm = () => {
             category: data[key].category,
           });
         }
-        setExpenses(loadedExpenses);
+        dispatch(setExpenses(loadedExpenses));
       })
       .catch((err) => {
         console.error(err);
@@ -64,13 +69,13 @@ const AddExpenseForm = () => {
   };
 
   const editExpenseHandler = (expense) => {
-    setEditingExpense(expense);
-    setIsEditing(true);
+    dispatch(setEditingExpenses(expense));
+    dispatch(setIsEditing(true));
   }
 
   const submitEditHandler = (editedExpense) => {
     console.log(editedExpense);
-    fetch("https://expense-tracker-ce1e9-default-rtdb.asia-southeast1.firebasedatabase.app/expenses/${editedExpense.id}.json", 
+    fetch(`https://expense-tracker-ce1e9-default-rtdb.asia-southeast1.firebasedatabase.app/expenses/${editedExpense.id}.json`, 
     {
       method: "PUT",
       body: JSON.stringify({
@@ -93,7 +98,7 @@ const AddExpenseForm = () => {
     .catch((err) => {
       console.error(err);
     });
-    setIsEditing(false);
+    dispatch(setIsEditing(false));
   }
 
   const submitHandler = (event) => {
@@ -124,6 +129,7 @@ const AddExpenseForm = () => {
         }
       })
       .then((data) => {
+        dispatch(addExpense({id: data.name, amount, description, category}));
         alert("Expense added successfully");
       })
       .catch((err) => {

@@ -1,6 +1,7 @@
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { useDispatch } from 'react-redux';
+import { login } from '../../store/authReducer';
 import classes from "./AuthForm.module.css";
-import AuthContext from "../../store/auth-context";
 import ForgotPassword from "./ForgotPassword";
 
 const AuthForm = () => {
@@ -8,12 +9,12 @@ const AuthForm = () => {
   const passwordInputRef = useRef();
   const confirmPasswordInputRef = useRef();
 
-  const authCtx = useContext(AuthContext);
+  const dispatch = useDispatch();
 
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [enteredConfirmPassword, setEnteredConfirmPassword] = useState("");
+  //const [enteredConfirmPassword, setEnteredConfirmPassword] = useState("");
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
@@ -70,7 +71,8 @@ const AuthForm = () => {
         }
       })
       .then((data) => {
-        authCtx.login(data.idToken);
+        alert("login successfully")
+        dispatch(login({ token: data.idToken, userId: data.localId }));
       })
       .catch((err) => {
         alert(err.Message);
@@ -101,7 +103,7 @@ const AuthForm = () => {
             id="confirm-password"
             required
             ref={confirmPasswordInputRef}
-            onChange={(event) => setEnteredConfirmPassword(event.target.value)}
+            //onChange={(event) => setEnteredConfirmPassword(event.target.value)}
           />
         </div>
         <div>

@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const EditExpenseForm = ({ expense, EditHandler }) => {
   const [editedExpense, setEditedExpense] = useState(expense);
 
+  useEffect(() => {
+    setEditedExpense(expense);
+  }, [expense]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

@@ -1,11 +1,8 @@
 import { Route, Routes, Navigate } from "react-router-dom";
-
+import { useSelector } from "react-redux";
 import Layout from "./components/Layout/Layout";
 import UserProfile from "./components/Profile/UserProfile";
 import AuthPage from "./pages/AuthPage";
-
-import { useContext } from "react";
-import AuthContext from "./store/auth-context";
 import HomePage from "./pages/HomePage";
 import ContactDetails from "./components/ContactDetails/ContactDetails";
 
@@ -13,15 +10,15 @@ import ContactDetails from "./components/ContactDetails/ContactDetails";
 
 
 function App() {
-  const authCtx = useContext(AuthContext);
+  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
   return (
     <Layout>
       <Routes>
-        {authCtx.isLoggedIn && <Route path="/" element={<HomePage />} exact />}
-        {!authCtx.isLoggedIn && <Route path="/" element={<AuthPage />} exact />}
-        {!authCtx.isLoggedIn && (<Route path="/auth" element={<AuthPage />} />)}
-        {authCtx.isLoggedIn && <Route path="/profile" element={<UserProfile />} />}
-        {authCtx.isLoggedIn && <Route path="/contactdetails" element={<ContactDetails />} />}
+        {isLoggedIn && <Route path="/" element={<HomePage />} exact />}
+        {!isLoggedIn && <Route path="/" element={<AuthPage />} exact />}
+        {!isLoggedIn && (<Route path="/auth" element={<AuthPage />} />)}
+        {isLoggedIn && <Route path="/profile" element={<UserProfile />} />}
+        {isLoggedIn && <Route path="/contactdetails" element={<ContactDetails />} />}
         <Route path="*" element={<Navigate replace to="/"/>} />
       </Routes>
     </Layout>

@@ -1,15 +1,16 @@
 import { Link } from "react-router-dom";
-import { useContext } from "react";
-import AuthContext from "../../store/auth-context";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../store/authReducer";
 import classes from "./MainNavigation.module.css";
 import VerifyEmailButton from "../Auth/VerifyEmail";
 
 const MainNavigation = () => {
-  const authCtx = useContext(AuthContext);
-  const isLoggedIn = authCtx.isLoggedIn;
+  const dispatch = useDispatch();
+
+  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
 
   const logoutHandler = () => {
-    authCtx.logout();
+    dispatch(logout());
   };
   
   return (

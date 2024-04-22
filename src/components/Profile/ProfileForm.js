@@ -1,10 +1,10 @@
-import { useContext, useRef } from 'react';
+import { useRef } from 'react';
 import classes from './ProfileForm.module.css';
-import AuthContext from '../../store/auth-context';
+import { useSelector } from 'react-redux';
 
 const ProfileForm = () => {
   const newPasswordInputRef = useRef();
-  const authCtx = useContext(AuthContext);
+  const token = useSelector(state => state.auth.token);
 
   const submitHandler = (event) =>{
     event.preventDefault();
@@ -13,7 +13,7 @@ const ProfileForm = () => {
     fetch('https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyBFJ2PbK-JDmex-oUwfhceDbZrZwclW3T4',{
       method: 'POST',
       body: JSON.stringify({
-        idToken: authCtx.token,
+        idToken: token,
         password: enteredNewPassword,
         returnSecureToken: false
       }),
@@ -21,7 +21,7 @@ const ProfileForm = () => {
         'Content-Type': 'application/json'
       }
     }).then(res => {
-      // assumption: Always succeeds!
+
     });
   };
   return (
