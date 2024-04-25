@@ -1,9 +1,14 @@
-import { useRef } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { useRef, useState } from "react";
+import { Button } from "react-bootstrap";
+import { hideForgotPassword } from "../../store/authReducer";
+import Modal from "../UI/Modal";
+import styles from "./ForgotPassword.module.css"; // Import CSS module
+import { useDispatch } from "react-redux";
 
-const ForgotPassword = ({onClose}) => {
+const ForgotPassword = () => {
   const emailInputRef = useRef(null);
-
+  const [errorMessage, setErrorMessage] = useState(null);
+  const dispatch = useDispatch();
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -22,35 +27,49 @@ const ForgotPassword = ({onClose}) => {
         },
       }
     )
-    .then((res) => {
+      .then((res) => {
         if (res.ok) {
           return res.json();
         } else {
           return res.json().then((data) => {
-            let errorMessage = "reset failed!";
+            let errorMessage = "Password reset failed. Please try again later.";
             throw new Error(errorMessage);
           });
         }
       })
       .then((data) => {
         console.log(data.email);
-        alert("email sent to your email");
-        onClose();
+        alert("An email has been sent to your email");
+        dispatch(hideForgotPassword());
       })
       .catch((err) => {
-        alert(err.Message);
+        setErrorMessage(err.message);
       });
-  
+  };
+  const handleClose = () => {
+    dispatch(hideForgotPassword());
   };
 
+
+
   return (
-    <Modal show={true}>
-      <form onSubmit={submitHandler}>
+    <Modal onClose={handleClose}>
+      <form className={styles["form-container"]} onSubmit={submitHandler}>
+        <h2>Forgot Password</h2>
         <div>
           <label htmlFor="forgotemail">Email:</label>
-          <input id="forgotemail" type="email" required ref={emailInputRef} />
-          <Button variant="info" type="submit">send link</Button>
+          <input
+            id="forgotemail"
+            type="email"
+            required
+            ref={emailInputRef}
+            className={styles["input-field"]}
+          />
+          <Button variant="info" type="submit">
+            Send link
+          </Button>
         </div>
+        {errorMessage && <p className={styles["error-message"]}>{errorMessage}</p>}
       </form>
     </Modal>
   );

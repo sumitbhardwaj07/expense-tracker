@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
-import { useDispatch } from 'react-redux';
-import { login } from '../../store/authReducer';
+import { useDispatch, useSelector } from 'react-redux';
+import { login, showForgotPassword} from '../../store/authReducer';
 import classes from "./AuthForm.module.css";
 import ForgotPassword from "./ForgotPassword";
+
 
 const AuthForm = () => {
   const emailInputRef = useRef();
@@ -10,21 +11,19 @@ const AuthForm = () => {
   const confirmPasswordInputRef = useRef();
 
   const dispatch = useDispatch();
-
+  const showModal = useSelector(state => state.auth.showForgotPasswordModal);
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
   //const [enteredConfirmPassword, setEnteredConfirmPassword] = useState("");
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
   };
   const forgotPasswordHandler = () => {
-    setShowForgotPassword(true);
+    dispatch(showForgotPassword());
   };
-  const closeForgotPasswordHandler = () =>{
-    setShowForgotPassword(false);
-  }
+ 
+  
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -130,7 +129,7 @@ const AuthForm = () => {
         </div>
       </form>
 
-      {showForgotPassword && <ForgotPassword onClose={closeForgotPasswordHandler}/>}
+      {showModal && <ForgotPassword />}
     </section>
   );
 };

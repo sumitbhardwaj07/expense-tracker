@@ -1,0 +1,36 @@
+
+
+.expense-list-container {
+    margin-top: 20px;
+  }
+  
+  .expense-list {
+    margin-bottom: 20px;
+  }
+  
+  .expense-details {
+    margin-right: 10px;
+  }
+  
+  .delete-button,
+  .edit-button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .delete-button {
+    background-color: #bc5862;
+    color: #fff;
+  }
+  
+  .edit-button {
+    background-color: #8bbdf2;
+    color: #fff;
+  }
+  .expense-item {
+    margin-bottom: 10px;
+  }
+  

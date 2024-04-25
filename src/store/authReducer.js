@@ -7,6 +7,7 @@ const initialAuthState = localStorage.getItem('authState')
       token: null,
       userId: null,
       isLoggedIn: false,
+      showForgotPasswordModal: false,
     };
 
 const authSlice = createSlice({
@@ -26,8 +27,15 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       localStorage.removeItem('authState');
     },
+    showForgotPassword(state) {
+      state.showForgotPasswordModal = true;
+    },
+    
+    hideForgotPassword(state) {
+      state.showForgotPasswordModal = false;
+    },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, showForgotPassword, hideForgotPassword } = authSlice.actions;
 export default authSlice.reducer;

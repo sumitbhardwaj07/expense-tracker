@@ -11,7 +11,7 @@ const VerifyEmailButton = () => {
   const sendVerificationEmail = () => {
     setIsSending(true);
     setError(null);
-    
+    console.log(idToken);
 
     fetch(
       "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyChMLQ7MPabwzdBlznppnvx0u0ClzjW2Sc",
@@ -37,12 +37,13 @@ const VerifyEmailButton = () => {
         }
       })
       .then((data) => {
-        setIsSending(false);
+        console.log(data);
         alert("successfully verified");
       })
       .catch((err) => {
         alert(err.Message);
       });
+      setIsSending(false);
   };
 
   return (

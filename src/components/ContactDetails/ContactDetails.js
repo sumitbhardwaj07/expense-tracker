@@ -1,19 +1,18 @@
-import { Container, Modal, Nav } from "react-bootstrap";
+import { Container, Nav } from "react-bootstrap";
 import classes from "./ContactDetails.module.css";
 import { useRef } from "react";
-const ContactDetails = () => {
+import { useSelector } from "react-redux";
 
+const ContactDetails = () => {
   const nameInputRef = useRef();
   const urlInputRef = useRef();
-  
+  const idToken = useSelector((state) => state.auth.token);
 
   const submitHandler = (event) => {
     event.preventDefault();
 
     const enteredName = nameInputRef.current.value;
     const enteredUrl = urlInputRef.current.value;
-    const idToken = localStorage.getItem('token');
-  
 
     fetch(
       "https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyChMLQ7MPabwzdBlznppnvx0u0ClzjW2Sc",
@@ -36,16 +35,12 @@ const ContactDetails = () => {
         } else {
           return res.json().then((data) => {
             let errorMessage = "Update failed!";
-            //if(data && data.error.message) {
-            //  errorMessage = data.error.message;
-            //}
             throw new Error(errorMessage);
           });
         }
       })
       .then((data) => {
-        
-        alert("updated successfully");
+        alert("Updated successfully");
       })
       .catch((err) => {
         console.log(err);
@@ -53,15 +48,15 @@ const ContactDetails = () => {
   };
 
   return (
-    <Modal show={true}>
+    <>
       <div className={classes.underline}>
         <Container>
           <div className={classes.flexContainer}>
-            <p>Winners never quite, Quitters never win.</p>
+            <p>Winners never quit, quitters never win.</p>
             <p className={classes.alignRight}>
-              Your Profile is 64% completed. A complete Profile has higher
-              chances of landig a job.{" "}
-              <Nav.Link href="/cotactde">Complete now</Nav.Link>
+              Your profile is 64% complete. A complete profile has higher chances
+              of landing a job.{" "}
+              <Nav.Link href="/contactde">Complete now</Nav.Link>
             </p>
           </div>
         </Container>
@@ -69,16 +64,38 @@ const ContactDetails = () => {
       </div>
       <Container>
         <h2>Contact Details</h2>
-        <form onSubmit={submitHandler}> 
-          <label htmlFor="fullname">Full Name: </label>
-          <input id="fullname" type="text" required ref={nameInputRef} />
-          <label htmlFor="photo">Profile Photo URL</label>
-          <input id="photo" type="url" required ref={urlInputRef} />
-          <button>Update</button>
-          <button>Close</button>
+        <form onSubmit={submitHandler} className={classes.form}>
+          <div className={classes.formGroup}>
+            <label htmlFor="fullname">Full Name:</label>
+            <input
+              id="fullname"
+              type="text"
+              required
+              ref={nameInputRef}
+              className={classes.input}
+            />
+          </div>
+          <div className={classes.formGroup}>
+            <label htmlFor="photo">Profile Photo URL:</label>
+            <input
+              id="photo"
+              type="url"
+              required
+              ref={urlInputRef}
+              className={classes.input}
+            />
+          </div>
+          <div className={classes.buttonGroup}>
+            <button type="submit" className={classes.submitButton}>
+              Update
+            </button>
+            <button type="button" className={classes.closeButton}>
+              Close
+            </button>
+          </div>
         </form>
       </Container>
-    </Modal>
+    </>
   );
 };
 

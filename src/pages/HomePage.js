@@ -1,5 +1,5 @@
 import { Container, } from "react-bootstrap";
-import classes from "./HomePage.module.css"; // Import your CSS file for styling
+import classes from "./HomePage.module.css"; 
 
 import { Link} from "react-router-dom";
 import { useState } from "react";
@@ -8,9 +8,9 @@ import AddExpenseForm from "../components/AddExpense/AddExpenseForm";
 
 const HomePage = () => {
 
-  const [showModal, setShowModal] = useState(false); // State to manage modal visibility
+  const [showModal, setShowModal] = useState(false);
 
-  // Function to handle opening the modal
+
   const handleOpenModal = () => {
     setShowModal(true);
   };
