@@ -1,7 +1,6 @@
-
-  .underline {
-    position: relative;
-  }
+ .underline {
+  text-decoration: underline;
+ }
   
   .bottomBorder {
     position: absolute; 

@@ -43,6 +43,7 @@ const ExpenseList = ({ fetchExpenses }) => {
         body: JSON.stringify({
           amount: editedExpense.amount,
           description: editedExpense.description,
+          date: editedExpense.date,
           category: editedExpense.category,
         }),
         headers: {
@@ -63,33 +64,68 @@ const ExpenseList = ({ fetchExpenses }) => {
       });
     dispatch(setIsEditing(false));
   };
+  const formatDate = (date) => {
+    const month = date.toLocaleString("en-US", { month: "long" });
+    const day = date.toLocaleString("en-US", { day: "2-digit" });
+    const year = date.getFullYear();
+    return { month, day, year };
+  };
 
   return (
     <div className="expense-list-container">
-      <div className="expense-list">
-        <h2>Expenses List</h2>
-        <ul>
+      <h2>Expenses List</h2>
+      <table className="expense-table">
+        <thead>
+          <tr>
+            <th>
+              <div className="date-box-container">
+                <div className="date-box">
+                  <div className="month">Month</div>
+                  <div className="year">Year</div>
+                  <div className="day">Day</div>
+                </div>
+              </div>
+            </th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
           {expenses.map((expense) => (
-            <li key={expense.id} className="expense-item">
-              <span className="expense-details">
-                {expense.amount} - {expense.description} - {expense.category}
-              </span>
-              <button
-                className="delete-button"
-                onClick={() => deleteExpenseHandler(expense.id)}
-              >
-                Delete
-              </button>
-              <button
-                className="edit-button"
-                onClick={() => editExpenseHandler(expense)}
-              >
-                Edit
-              </button>
-            </li>
+            <tr key={expense.id}>
+              <td>
+                <div className="date-box-container">
+                  <div className="date-box">
+                    <div className="month">
+                      {formatDate(new Date(expense.date)).month}
+                    </div>
+                    <div className="year">
+                      {formatDate(new Date(expense.date)).year}
+                    </div>
+                    <div className="day">
+                      {formatDate(new Date(expense.date)).day}
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+              <td>{expense.description}</td>
+              <td>Rs{expense.amount}</td>
+              <td>{expense.category}</td>
+              <td>
+                <button onClick={() => deleteExpenseHandler(expense.id)}>
+                  Delete
+                </button>
+                <button onClick={() => editExpenseHandler(expense)}>
+                  Edit
+                </button>
+              </td>
+            </tr>
           ))}
-        </ul>
-      </div>
+        </tbody>
+      </table>
       {isEditing && (
         <div className="edit-form-container">
           <h2>Edit Expense</h2>

@@ -6,7 +6,7 @@ const initialState = {
   expenses: [],
   editingExpense: null,
   isEditing: false,
-
+  showNewExpenseForm: false,
 };
 
 const expensesSlice = createSlice({
@@ -31,11 +31,14 @@ const expensesSlice = createSlice({
     setIsEditing(state, action){
       state.isEditing = action.payload;
     },
+    setShowNewExpenseForm(state, action) {
+      state.showNewExpenseForm = action.payload;
+    },
     setExpenses(state, action) {
       state.expenses = action.payload;
     }
   },
 });
 
-export const { addExpense, deleteExpense, updateExpense, setEditingExpenses, setIsEditing, setExpenses } = expensesSlice.actions;
+export const { addExpense, deleteExpense, updateExpense, setEditingExpenses, setIsEditing, setExpenses, setShowNewExpenseForm } = expensesSlice.actions;
 export default expensesSlice.reducer;

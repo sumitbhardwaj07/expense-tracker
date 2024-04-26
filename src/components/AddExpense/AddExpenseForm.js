@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
-import ExpenseForm from "./AddExpenseForm";
 import ExpenseList from "./ExpenseList";
 import { setExpenses } from "../../store/expensesReducer";
 import { useDispatch } from "react-redux";
 import "./AddExpenseForm.css";
+import NewExpense from "./NewExpense";
 
 
 const AddExpenseForm = () => {
   const dispatch = useDispatch();
-
+  
 
   const fetchExpenses = () => {
     fetch(
@@ -28,6 +28,7 @@ const AddExpenseForm = () => {
             id: key,
             amount: data[key].amount,
             description: data[key].description,
+            date: data[key].date,
             category: data[key].category,
           });
         }
@@ -46,11 +47,15 @@ const AddExpenseForm = () => {
 
 
   return (
-    <div className="expense-form-container">
+    <>
+    <NewExpense />
+    <div className="new-expense">
+  
       <ExpenseList fetchExpenses={fetchExpenses} />
-      <ExpenseForm />
-    
     </div>
+
+    
+    </>
   );
 };
 
