@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 const EditExpenseForm = ({ expense, EditHandler }) => {
   const [editedExpense, setEditedExpense] = useState(expense);
-  const [date, setDate] = useState(expense.date);
+
   
 
   useEffect(() => {
@@ -14,8 +14,8 @@ const EditExpenseForm = ({ expense, EditHandler }) => {
     setEditedExpense({ ...editedExpense, [name]: value });
   };
   const handleDateChange = (e) => {
-    setDate(e.target.value);
-    setEditedExpense({ ...editedExpense, date: e.target.value });
+    const newDate = e.target.value;
+    setEditedExpense({ ...editedExpense, date: newDate });
   };
 
   const handleSubmit = (e) => {
@@ -33,6 +33,7 @@ const EditExpenseForm = ({ expense, EditHandler }) => {
             type="number"
             min="1"
             step="1"
+            name="amount"
             required
             value={editedExpense.amount}
             onChange={handleChange}
@@ -42,6 +43,7 @@ const EditExpenseForm = ({ expense, EditHandler }) => {
           <label htmlFor="description">Description</label>
           <input
             id="description"
+            name="description"
             required
             value={editedExpense.description}
             onChange={handleChange}
@@ -53,7 +55,8 @@ const EditExpenseForm = ({ expense, EditHandler }) => {
             type="date"
             min="2019-01-01"
             max="2030-12-31"
-            value={date}
+            name="date"
+            value={editedExpense.date}
             onChange={handleDateChange}
           />
         </div>
@@ -61,6 +64,7 @@ const EditExpenseForm = ({ expense, EditHandler }) => {
           <label htmlFor="category">Category</label>
           <select
             id="category"
+            name="category"
             required
             value={editedExpense.category}
             onChange={handleChange}

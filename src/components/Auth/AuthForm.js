@@ -25,58 +25,60 @@ const AuthForm = () => {
  
   
 
-  const submitHandler = (event) => {
+  const submitHandler = async (event) => {
     event.preventDefault();
-
+  
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
     const enteredConfirmedPassword = confirmPasswordInputRef.current.value;
-
+  
     if (!isLogin && enteredPassword !== enteredConfirmedPassword) {
       alert("Passwords do not match.");
       return;
     }
-
   
     setIsLoading(true);
     let url;
     if (isLogin) {
       url =
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyChMLQ7MPabwzdBlznppnvx0u0ClzjW2Sc";
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=YOUR_API_KEY";
     } else {
       url =
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyChMLQ7MPabwzdBlznppnvx0u0ClzjW2Sc";
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=YOUR_API_KEY";
     }
-    fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        email: enteredEmail,
-        password: enteredPassword,
-        returnSecureToken: true,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
-        setIsLoading(false);
-        if (res.ok) {
-          return res.json();
-        } else {
-          return res.json().then((data) => {
-            let errorMessage = "Authentication failed!";
-            throw new Error(errorMessage);
-          });
-        }
-      })
-      .then((data) => {
-        alert("login successfully")
-        dispatch(login({ token: data.idToken, userId: data.localId }));
-      })
-      .catch((err) => {
-        alert(err.Message);
+  
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+          email: enteredEmail,
+          password: enteredPassword,
+          returnSecureToken: true,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
+  
+      if (!response.ok) {
+        const data = await response.json();
+        let errorMessage = "Authentication failed!";
+        if (data && data.error && data.error.message) {
+          errorMessage = data.error.message;
+        }
+        throw new Error(errorMessage);
+      }
+  
+      const data = await response.json();
+      alert("Login successful");
+      dispatch(login({ token: data.idToken, userId: data.localId }));
+    } catch (error) {
+      alert(error.message);
+    }
+  
+    setIsLoading(false);
   };
+  
 
   return (
     <section className={classes.auth}>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import { addExpense, setShowNewExpenseForm } from "../../store/expensesReducer";
 import "./ExpenseForm.css";
 
@@ -10,56 +10,50 @@ const ExpenseForm = () => {
   const [date, setDate] = useState("");
   const [category, setCategory] = useState("Food");
 
-  //const showForm = useSelector((state) => state.expenses.showNewExpenseForm);
 
-  const closeForm = () =>{
-      dispatch(setShowNewExpenseForm(false));
+
+  const closeForm = () => {
+    dispatch(setShowNewExpenseForm(false));
   };
 
-  const submitHandler = (event) => {
+  const submitHandler = async (event) => {
     event.preventDefault();
-
-    fetch(
-      "https://expense-tracker-ce1e9-default-rtdb.asia-southeast1.firebasedatabase.app/expenses.json",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          amount: amount,
-          description: description,
-          date: date,
-          category: category,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          return res.json().then((data) => {
-            let errorMessage = "failed to add expense!";
-            throw new Error(errorMessage);
-          });
+  
+    try {
+      const response = await fetch(
+        "https://expense-tracker-ce1e9-default-rtdb.asia-southeast1.firebasedatabase.app/expenses.json",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            amount: amount,
+            description: description,
+            date: date,
+            category: category,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      })
-      .then((data) => {
-        dispatch(
-          addExpense({ id: data.name, amount, description, date, category })
-        );
-        alert("Expense added successfully");
-        closeForm();
-      })
-      .catch((err) => {
-        alert(err.Message);
-      });
-
-    setAmount("");
-    setDescription("");
-    setDate("");
-    setCategory("Food");
+      );
+  
+      if (!response.ok) {
+        const data = await response.json();
+        let errorMessage = "Failed to add expense!";
+        if (data && data.error) {
+          errorMessage = data.error;
+        }
+        throw new Error(errorMessage);
+      }
+  
+      const data = await response.json();
+      dispatch(addExpense({ id: data.name, amount, description, date, category }));
+      alert("Expense added successfully");
+      closeForm();
+    } catch (error) {
+      alert(error.message);
+    }
   };
+  
 
   return (
     <form onSubmit={submitHandler}>
@@ -114,7 +108,9 @@ const ExpenseForm = () => {
           </select>
         </div>
         <div className="new-expense__actions">
-        <button type="button" onClick={closeForm}>Cancel</button>
+          <button type="button" onClick={closeForm}>
+            Cancel
+          </button>
           <button type="submit">Add Expense</button>
         </div>
       </div>

@@ -10,24 +10,35 @@ const ExpenseList = ({ fetchExpenses }) => {
   const isEditing = useSelector((state) => state.expenses.isEditing);
   const editingExpense = useSelector((state) => state.expenses.editingExpense);
 
-  const deleteExpenseHandler = (id) => {
-    fetch(
-      `https://expense-tracker-ce1e9-default-rtdb.asia-southeast1.firebasedatabase.app/expenses/${id}.json`,
-      {
-        method: "DELETE",
-      }
-    )
-      .then((res) => {
-        if (res.ok) {
-          alert("Expense successfully deleted");
-          fetchExpenses();
-        } else {
-          throw new Error("Failed to delete expense");
+  const filteredYear = useSelector((state) => state.filter.filteredYear);
+  const filteredExpenses = expenses.filter((expense) => {
+    const expenseDate = new Date(expense.date);
+    return expenseDate.getFullYear().toString() === filteredYear;
+  });
+
+  const totalAmount = filteredExpenses.reduce(
+    (total, expense) => total + parseFloat(expense.amount),
+    0
+  );
+
+  const deleteExpenseHandler = async (id) => {
+    try {
+      const response = await fetch(
+        `https://expense-tracker-ce1e9-default-rtdb.asia-southeast1.firebasedatabase.app/expenses/${id}.json`,
+        {
+          method: "DELETE",
         }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+      );
+  
+      if (response.ok) {
+        alert("Expense successfully deleted");
+        fetchExpenses();
+      } else {
+        throw new Error("Failed to delete expense");
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const editExpenseHandler = (expense) => {
@@ -35,33 +46,34 @@ const ExpenseList = ({ fetchExpenses }) => {
     dispatch(setIsEditing(true));
   };
 
-  const submitEditHandler = (editedExpense) => {
-    fetch(
-      `https://expense-tracker-ce1e9-default-rtdb.asia-southeast1.firebasedatabase.app/expenses/${editedExpense.id}.json`,
-      {
-        method: "PUT",
-        body: JSON.stringify({
-          amount: editedExpense.amount,
-          description: editedExpense.description,
-          date: editedExpense.date,
-          category: editedExpense.category,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
-      .then((res) => {
-        if (res.ok) {
-          alert("Expense successfully updated");
-          fetchExpenses();
-        } else {
-          throw new Error("Failed to update expense");
+  const submitEditHandler = async (editedExpense) => {
+    try {
+      const response = await fetch(
+        `https://expense-tracker-ce1e9-default-rtdb.asia-southeast1.firebasedatabase.app/expenses/${editedExpense.id}.json`,
+        {
+          method: "PUT",
+          body: JSON.stringify({
+            amount: editedExpense.amount,
+            description: editedExpense.description,
+            date: editedExpense.date,
+            category: editedExpense.category,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+      );
+  
+      if (response.ok) {
+        alert("Expense successfully updated");
+        fetchExpenses();
+      } else {
+        throw new Error("Failed to update expense");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  
     dispatch(setIsEditing(false));
   };
   const formatDate = (date) => {
@@ -93,7 +105,7 @@ const ExpenseList = ({ fetchExpenses }) => {
           </tr>
         </thead>
         <tbody>
-          {expenses.map((expense) => (
+          {filteredExpenses.map((expense) => (
             <tr key={expense.id}>
               <td>
                 <div className="date-box-container">
@@ -124,6 +136,13 @@ const ExpenseList = ({ fetchExpenses }) => {
               </td>
             </tr>
           ))}
+          <tr>
+            <td colSpan="2"></td>
+            <td>
+              <strong style={{ color: 'white' }}>Total:Rs{totalAmount}</strong>
+            </td>
+             <td colSpan="2"></td> 
+          </tr>
         </tbody>
       </table>
       {isEditing && (

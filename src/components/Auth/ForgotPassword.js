@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { Button } from "react-bootstrap";
 import { hideForgotPassword } from "../../store/authReducer";
 import Modal from "../UI/Modal";
-import styles from "./ForgotPassword.module.css"; // Import CSS module
+import styles from "./ForgotPassword.module.css";
 import { useDispatch } from "react-redux";
 
 const ForgotPassword = () => {
@@ -10,47 +10,48 @@ const ForgotPassword = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const dispatch = useDispatch();
 
-  const submitHandler = (event) => {
-    event.preventDefault();
-    const enteredEmail = emailInputRef.current.value;
-
-    fetch(
-      "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyChMLQ7MPabwzdBlznppnvx0u0ClzjW2Sc",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          requestType: "PASSWORD_RESET",
-          email: enteredEmail,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          return res.json().then((data) => {
-            let errorMessage = "Password reset failed. Please try again later.";
-            throw new Error(errorMessage);
-          });
-        }
-      })
-      .then((data) => {
-        console.log(data.email);
-        alert("An email has been sent to your email");
-        dispatch(hideForgotPassword());
-      })
-      .catch((err) => {
-        setErrorMessage(err.message);
-      });
-  };
   const handleClose = () => {
     dispatch(hideForgotPassword());
   };
 
 
+  const submitHandler = async (event) => {
+    event.preventDefault();
+    const enteredEmail = emailInputRef.current.value;
+  
+    try {
+      const response = await fetch(
+        "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=YOUR_API_KEY",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            requestType: "PASSWORD_RESET",
+            email: enteredEmail,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        const data = await response.json();
+        let errorMessage = "Password reset failed. Please try again later.";
+        if (data && data.error && data.error.message) {
+          errorMessage = data.error.message;
+        }
+        throw new Error(errorMessage);
+      }
+  
+      const data = await response.json();
+      console.log(data.email);
+      alert("An email has been sent to your email");
+      dispatch(hideForgotPassword());
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
+  
 
   return (
     <Modal onClose={handleClose}>
