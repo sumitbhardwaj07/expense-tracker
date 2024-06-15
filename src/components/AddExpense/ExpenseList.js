@@ -15,6 +15,8 @@ const ExpenseList = ({ fetchExpenses }) => {
     const expenseDate = new Date(expense.date);
     return expenseDate.getFullYear().toString() === filteredYear;
   });
+  const compactedEmail = useSelector(state => state.auth.dummyEmail);
+
 
   const totalAmount = filteredExpenses.reduce(
     (total, expense) => total + parseFloat(expense.amount),
@@ -24,7 +26,7 @@ const ExpenseList = ({ fetchExpenses }) => {
   const deleteExpenseHandler = async (id) => {
     try {
       const response = await fetch(
-        `https://expense-tracker-ce1e9-default-rtdb.asia-southeast1.firebasedatabase.app/expenses/${id}.json`,
+        `https://expense-tracker-ce1e9-default-rtdb.asia-southeast1.firebasedatabase.app/${compactedEmail}/${id}.json`,
         {
           method: "DELETE",
         }
@@ -47,9 +49,10 @@ const ExpenseList = ({ fetchExpenses }) => {
   };
 
   const submitEditHandler = async (editedExpense) => {
+    
     try {
       const response = await fetch(
-        `https://expense-tracker-ce1e9-default-rtdb.asia-southeast1.firebasedatabase.app/expenses/${editedExpense.id}.json`,
+        `https://expense-tracker-ce1e9-default-rtdb.asia-southeast1.firebasedatabase.app/${compactedEmail}/${editedExpense.id}.json`,
         {
           method: "PUT",
           body: JSON.stringify({

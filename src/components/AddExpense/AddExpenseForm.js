@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import ExpenseList from "./ExpenseList";
 import { setExpenses } from "../../store/expensesReducer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./AddExpenseForm.css";
 import NewExpense from "./NewExpense";
 import ExpensesFilter from "./ExpensesFilter";
@@ -9,11 +9,14 @@ import ExpenseChart from "./ExpensesChart";
 
 const AddExpenseForm = () => {
   const dispatch = useDispatch();
+  const compactedEmail = useSelector(state => state.auth.dummyEmail);
+  console.log(compactedEmail);
+
 
   const fetchExpenses = async () => {
     try {
       const response = await fetch(
-        "https://expense-tracker-ce1e9-default-rtdb.asia-southeast1.firebasedatabase.app/expenses.json"
+        `https://expense-tracker-ce1e9-default-rtdb.asia-southeast1.firebasedatabase.app/${compactedEmail}.json`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch expenses");

@@ -1,5 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const createDummyEmail = (email) => {
+  if (!email) return '';
+  return email
+    .toLowerCase()
+    .split("")
+    .filter((e) => e.charCodeAt(0) >= 97 && e.charCodeAt(0) <= 122)
+    .join("");
+};
+
+
 const initialAuthState = localStorage.getItem("authState")
   ? JSON.parse(localStorage.getItem("authState"))
   : {
@@ -7,13 +17,10 @@ const initialAuthState = localStorage.getItem("authState")
       userId: null,
       isLoggedIn: false,
       showForgotPasswordModal: false,
-      userData: {
-        name: '',
-        email: '',
-        photoUrl: '',
-      },
+      dummyEmail: '',
     };
 
+// Create auth slice
 const authSlice = createSlice({
   name: "auth",
   initialState: initialAuthState,
@@ -21,6 +28,7 @@ const authSlice = createSlice({
     login(state, action) {
       state.token = action.payload.token;
       state.userId = action.payload.userId;
+      state.dummyEmail = createDummyEmail(action.payload.email);
       state.isLoggedIn = true;
       localStorage.setItem("authState", JSON.stringify(state));
     },
@@ -33,16 +41,12 @@ const authSlice = createSlice({
     showForgotPassword(state) {
       state.showForgotPasswordModal = true;
     },
-
     hideForgotPassword(state) {
       state.showForgotPasswordModal = false;
     },
-    fetchUserData(state, action) {
-      state.userData = action.payload;
-    }
+    
   },
 });
 
-export const { login, logout, showForgotPassword, hideForgotPassword, fetchUserData } =
-  authSlice.actions;
+export const { login, logout, showForgotPassword, hideForgotPassword } = authSlice.actions;
 export default authSlice.reducer;

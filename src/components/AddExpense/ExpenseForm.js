@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addExpense, setShowNewExpenseForm } from "../../store/expensesReducer";
 import "./ExpenseForm.css";
 
@@ -11,17 +11,19 @@ const ExpenseForm = () => {
   const [category, setCategory] = useState("Food");
 
 
+  const compactedEmail = useSelector(state => state.auth.dummyEmail);
 
   const closeForm = () => {
     dispatch(setShowNewExpenseForm(false));
   };
 
   const submitHandler = async (event) => {
+    console.log(compactedEmail);
     event.preventDefault();
   
     try {
       const response = await fetch(
-        "https://expense-tracker-ce1e9-default-rtdb.asia-southeast1.firebasedatabase.app/expenses.json",
+        `https://expense-tracker-ce1e9-default-rtdb.asia-southeast1.firebasedatabase.app/${compactedEmail}.json`,
         {
           method: "POST",
           body: JSON.stringify({

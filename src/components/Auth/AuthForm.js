@@ -41,10 +41,10 @@ const AuthForm = () => {
     let url;
     if (isLogin) {
       url =
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=YOUR_API_KEY";
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyChMLQ7MPabwzdBlznppnvx0u0ClzjW2Sc";
     } else {
       url =
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=YOUR_API_KEY";
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyChMLQ7MPabwzdBlznppnvx0u0ClzjW2Sc";
     }
   
     try {
@@ -71,7 +71,8 @@ const AuthForm = () => {
   
       const data = await response.json();
       alert("Login successful");
-      dispatch(login({ token: data.idToken, userId: data.localId }));
+      console.log(data);
+      dispatch(login({ token: data.idToken, userId: data.localId, email: data.email }));
     } catch (error) {
       alert(error.message);
     }
