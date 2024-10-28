@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../store/authReducer";
 import classes from "./MainNavigation.module.css";
+import { Base_URL } from "../UI/Helper";
 
 
 const MainNavigation = () => {
@@ -16,7 +17,7 @@ const MainNavigation = () => {
 
   const logoutHandler = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/v1/users/logout", {
+      const response = await fetch(`${Base_URL}/api/v1/users/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

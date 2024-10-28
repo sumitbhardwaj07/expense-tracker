@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addExpense, setShowNewExpenseForm } from "../../store/expensesReducer";
 import "./ExpenseForm.css";
+import { Base_URL } from "../UI/Helper";
 
 const ExpenseForm = () => {
   const dispatch = useDispatch();
@@ -24,7 +25,7 @@ const ExpenseForm = () => {
   
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/expenses/create`,
+        `${Base_URL}/api/v1/expenses/create`,
         {
           method: "POST",
           body: JSON.stringify({amount, description, date, category }),

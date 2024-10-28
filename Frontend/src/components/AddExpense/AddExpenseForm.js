@@ -6,6 +6,7 @@ import "./AddExpenseForm.css";
 import NewExpense from "./NewExpense";
 import ExpensesFilter from "./ExpensesFilter";
 import ExpenseChart from "./ExpensesChart";
+import { Base_URL } from "../UI/Helper";
 
 const AddExpenseForm = () => {
   const dispatch = useDispatch();
@@ -16,7 +17,7 @@ const AddExpenseForm = () => {
   const fetchExpenses = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/expenses/`,{
+        `${Base_URL}/api/v1/expenses/`,{
           method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`, // Correctly set the header

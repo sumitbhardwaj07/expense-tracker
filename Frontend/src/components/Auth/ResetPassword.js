@@ -5,6 +5,7 @@ import Modal from "../UI/Modal";
 import styles from "./ForgotPassword.module.css";
 import { hideResetPassword, showResetPassword } from "../../store/authReducer";
 import { useDispatch } from "react-redux";
+import { Base_URL } from "../UI/Helper";
 
 const ResetPassword = () => {
   const newPasswordInputRef = useRef(null);
@@ -35,7 +36,7 @@ const ResetPassword = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/v1/forgotpass/resetpassword/${token}`, // Send token and password
+        `${Base_URL}/api/v1/forgotpass/resetpassword/${token}`, // Send token and password
         {
           method: "PATCH",
           body: JSON.stringify({ newPassword }),

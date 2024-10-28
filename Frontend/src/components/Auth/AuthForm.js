@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useDispatch } from 'react-redux';
 import classes from "./AuthForm.module.css";
 import { login } from "../../store/authReducer";
+import { Base_URL } from "../UI/Helper";
 
 const AuthForm = () => {
   const emailInputRef = useRef();
@@ -38,7 +39,7 @@ const AuthForm = () => {
     if (isLogin) {
       // Step 1: Login
       try {
-        const response = await fetch("http://localhost:8000/api/v1/users/login", {
+        const response = await fetch(`${Base_URL}/api/v1/users/login`, {
           method: "POST",
           body: JSON.stringify({ email: enteredEmail, password: enteredPassword }),
           headers: { "Content-Type": "application/json" },
@@ -60,7 +61,7 @@ const AuthForm = () => {
       if (!otpSent) {
         // Send OTP
         try {
-          const response = await fetch("http://localhost:8000/api/v1/users/send-otp", {
+          const response = await fetch(`${Base_URL}/api/v1/users/send-otp`, {
             method: "POST",
             body: JSON.stringify({ email: enteredEmail }),
             headers: { "Content-Type": "application/json" },
@@ -79,7 +80,7 @@ const AuthForm = () => {
       } else {
         // Verify OTP and register
         try {
-          const response = await fetch("http://localhost:8000/api/v1/users/verify-otp", {
+          const response = await fetch(`${Base_URL}/api/v1/users/verify-otp`, {
             method: "POST",
             body: JSON.stringify({
               email: enteredEmail,

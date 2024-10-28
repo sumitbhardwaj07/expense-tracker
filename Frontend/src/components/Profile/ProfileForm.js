@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import classes from './ProfileForm.module.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../store/authReducer';
+import { Base_URL } from '../UI/Helper';
 const ProfileForm = () => {
   const newPasswordInputRef = useRef();
   const currentPassInputRef = useRef();
@@ -16,7 +17,7 @@ const ProfileForm = () => {
     
   
     try {
-      const response = await fetch('http://localhost:8000/api/v1/users/changepassword', {
+      const response = await fetch(`${Base_URL}/api/v1/users/changepassword`, {
         method: 'POST',
         body: JSON.stringify({
           currentpassword,

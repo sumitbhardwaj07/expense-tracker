@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setEditingExpenses, setIsEditing } from "../../store/expensesReducer";
 import "./ExpenseList.css";
 import EditExpenseForm from "./EditExpenseForm";
+import { Base_URL } from "../UI/Helper";
 
 const ExpenseList = ({ fetchExpenses }) => {
   const [expenseCount, setExpenseCount] = useState(5); // Default to 5 expenses
@@ -42,7 +43,7 @@ const ExpenseList = ({ fetchExpenses }) => {
   const deleteExpenseHandler = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/expenses/${id}`,
+        `${Base_URL}/api/v1/expenses/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -76,7 +77,7 @@ const ExpenseList = ({ fetchExpenses }) => {
     
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/expenses/${editedExpense.id}`,
+        `${Base_URL}/api/v1/expenses/${editedExpense.id}`,
         {
           method: "PUT",
           body: JSON.stringify({

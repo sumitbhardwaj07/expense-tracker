@@ -4,6 +4,7 @@ import { hideForgotPassword } from "../../store/authReducer";
 import Modal from "../UI/Modal";
 import styles from "./ForgotPassword.module.css";
 import { useDispatch } from "react-redux";
+import { Base_URL } from "../UI/Helper";
 
 const ForgotPassword = () => {
   const emailInputRef = useRef(null);
@@ -21,7 +22,7 @@ const ForgotPassword = () => {
   
     try {
       const response = await fetch(
-        "http://localhost:5000/api/v1/forgotpass/requestpasswordreset", // Your backend route
+        `${Base_URL}/api/v1/forgotpass/requestpasswordreset`, // Your backend route
         {
           method: "POST", // Using PATCH for password reset request
           body: JSON.stringify({ email: enteredEmail }), // Sending email in request body
