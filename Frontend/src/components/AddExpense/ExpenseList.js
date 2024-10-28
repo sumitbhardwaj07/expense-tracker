@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setEditingExpenses, setIsEditing } from "../../store/expensesReducer";
 import "./ExpenseList.css";
 import EditExpenseForm from "./EditExpenseForm";
 
 const ExpenseList = ({ fetchExpenses }) => {
+  const [expenseCount, setExpenseCount] = useState(5); // Default to 5 expenses
   const dispatch = useDispatch();
   const expenses = useSelector((state) => state.expenses.expenses);
   const isEditing = useSelector((state) => state.expenses.isEditing);
@@ -14,9 +15,24 @@ const ExpenseList = ({ fetchExpenses }) => {
   const filteredExpenses = expenses.filter((expense) => {
     const expenseDate = new Date(expense.date);
     return expenseDate.getFullYear().toString() === filteredYear;
-  });
+  }).slice(0, expenseCount);
   const token = useSelector(state => state.auth.token);
 
+  //const [expenseCount, setExpenseCount] = useState(5); // Default to 5 expenses
+
+  useEffect(() => {
+    // Retrieve saved preference from local storage on component mount
+    const savedCount = localStorage.getItem("expenseCount");
+    if (savedCount) {
+      setExpenseCount(parseInt(savedCount));
+    }
+  }, []);
+
+  const handleExpenseCountChange = (event) => {
+    const count = parseInt(event.target.value);
+    setExpenseCount(count);
+    localStorage.setItem("expenseCount", count); // Save preference to local storage
+  };
 
   const totalAmount = filteredExpenses.reduce(
     (total, expense) => total + parseFloat(expense.amount),
@@ -99,6 +115,19 @@ const ExpenseList = ({ fetchExpenses }) => {
   return (
     <div className="expense-list-container">
       <h2>Expenses List</h2>
+
+      <div className="expense-count-selector">
+        <label htmlFor="expenseCount">Show expenses:</label>
+        <select id="expenseCount" value={expenseCount} onChange={handleExpenseCountChange}>
+          {[5, 10, 15, 20].map((count) => (
+            <option key={count} value={count}>
+              {count}
+            </option>
+          ))}
+        </select>
+      </div>
+
+
       <table className="expense-table">
         <thead>
           <tr>
