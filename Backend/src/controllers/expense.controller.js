@@ -46,7 +46,7 @@ const deleteExpense = asyncHandler(async (req, res) => {
 const updateExpense = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { category, amount, date, description } = req.body;
-    console.log(id);
+    //console.log(id);
 
 
     const expense = await Expense.findOneAndUpdate(

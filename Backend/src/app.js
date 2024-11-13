@@ -21,7 +21,6 @@ app.use(express.urlencoded({
 
 app.use(express.static("public"))
 app.use(cookieParser())
-//router declaration
 
 import userRouter from './routes/user.router.js'
 import expenseRouter from "./routes/expense.route.js"

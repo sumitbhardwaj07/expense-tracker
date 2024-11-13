@@ -4,20 +4,19 @@ import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from 'jsonwebtoken';
 import { sendEmail } from "../utils/sendEmail.js";
-import bcrypt from "bcrypt"
 
-/**
- * Generates both access and refresh tokens for a user
- */
+
+//generate access and refresh tokens
 const generateAccessAndRefereshTokens = async(userId) =>{
   try {
       //console.log(userId);
-      const user = await User.findById(userId)
+      const user = await User.findById(userId);
+      if (!user) throw new ApiError(404, "User not found");
       //console.log(user);
       const accessToken = user.generateAccessToken()
       const refreshToken = user.generateRefreshToken()
-      console.log(accessToken);
-      console.log(refreshToken)
+      //console.log(accessToken);
+      //console.log(refreshToken)
 
       user.refreshToken = refreshToken
       await user.save({ validateBeforeSave: false })
@@ -30,8 +29,11 @@ const generateAccessAndRefereshTokens = async(userId) =>{
   }
 }
 
+//generate otp
 
 const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
+
+//send otp 
 
 const sendOtp = asyncHandler(async (req, res) => {
   const { email } = req.body;
@@ -40,33 +42,31 @@ const sendOtp = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Email is required");
   }
 
-  // Check if the user already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     throw new ApiError(409, "User with this email already exists");
   }
 
-  // Generate OTP
   const otp = generateOtp();
 
-  // Create JWT token with OTP and email
   const otpToken = jwt.sign(
     { email, otp },
-    process.env.OTP_SECRET, // Secret for signing the OTP token
-    { expiresIn: '10m' } // OTP validity for 10 minutes
+    process.env.OTP_SECRET,
+    { expiresIn: '10m' } 
   );
 
-  // Send OTP via email
   const message = `Your OTP code is ${otp}. It is valid for 10 minutes.`;
+
   await sendEmail({
     email,
     subject: 'OTP for Registration',
     message,
   });
 
-  // Respond to the user
   res.status(200).json({ success: true, message: 'OTP sent successfully', otpToken });
 });
+
+// verify otp 
 
 const verifyOtp = asyncHandler(async (req, res) => {
   const { otpToken, otp, email, password } = req.body;
@@ -75,7 +75,6 @@ const verifyOtp = asyncHandler(async (req, res) => {
     throw new ApiError(400, "OTP, email, and password are required");
   }
 
-  // Verify JWT token
   let decodedToken;
   try {
     decodedToken = jwt.verify(otpToken, process.env.OTP_SECRET);
@@ -83,24 +82,20 @@ const verifyOtp = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid or expired OTP");
   }
 
-  // Check if the email in the token matches the provided email
   if (decodedToken.email !== email) {
     throw new ApiError(400, "Invalid email for this OTP");
   }
 
-  // Check if OTP matches
   if (decodedToken.otp !== otp) {
     throw new ApiError(400, "Incorrect OTP");
   }
 
-  // Check if user already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     throw new ApiError(409, "User with this email already exists");
   }
 
 
-  // Create user in the database
   const user = await User.create({
     email,
     password,
@@ -116,50 +111,8 @@ const verifyOtp = asyncHandler(async (req, res) => {
 });
 
 
-/**
- * Registers a new user
- */
-// const registerUser = asyncHandler(async (req, res) => {
-//   const { email, password } = req.body;
+//login
 
-//   if (!email) {
-//     throw new ApiError(400, "Email is required");
-//   }
-//   if (!password) {
-//     throw new ApiError(400, "Password is required");
-//   }
-
-//   const existedUser = await User.findOne({ email });
-//   if (existedUser) {
-//     throw new ApiError(409, "User with email already exists");
-//   }
-
-//   const user = await User.create({ email, password });
-
-//   const verificationToken = jwt.sign({ id: user._id }, process.env.VERIFICATION_TOKEN_SECRET, { expiresIn: '1d' });
-//   user.verificationToken = verificationToken;
-//   await user.save();
-
-//   // Send verification email
-//   const verificationUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/verify-email/${verificationToken}`;
-//   await sendEmail({
-//     email,
-//     subject: 'Email Verification',
-//     message: `Please verify your email by clicking on the following link: ${verificationUrl}`,
-//   });
-
-//   const createdUser = await User.findById(user._id).select("-password -refreshToken");
-
-//   if (!createdUser) {
-//     throw new ApiError(500, "User registration failed");
-//   }
-
-//   res.status(201).json(new ApiResponse(200, createdUser, "User registered successfully"));
-// });
-
-/**
- * Logs in a user
- */
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -189,9 +142,8 @@ const loginUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "User logged in successfully"));
 });
 
-/**
- * Logs out the current user
- */
+//logout
+
 const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(req.user._id, { $unset: { refreshToken: 1 } }, { new: true });
 
@@ -205,9 +157,8 @@ const logoutUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "User logged out"));
 });
 
-/**
- * Refreshes access token using the refresh token
- */
+//Refresh token 
+
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
 
@@ -236,9 +187,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
-/**
- * Changes the current user's password
- */
+//change password
+
 const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { newpassword, currentpassword } = req.body;
 
@@ -259,9 +209,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, {}, "Password changed successfully"));
 });
 
-/**
- * Gets the current authenticated user
- */
+
 const getCurrentUser = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, req.user, "User fetched successfully"));
 });

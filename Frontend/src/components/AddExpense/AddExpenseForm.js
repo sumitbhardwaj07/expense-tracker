@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ExpenseList from "./ExpenseList";
 import { setExpenses } from "../../store/expensesReducer";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import "./AddExpenseForm.css";
 import NewExpense from "./NewExpense";
 import ExpensesFilter from "./ExpensesFilter";
@@ -10,18 +10,19 @@ import { Base_URL } from "../UI/Helper";
 
 const AddExpenseForm = () => {
   const dispatch = useDispatch();
-  const token = useSelector(state => state.auth.token);
-
+  const token = localStorage.getItem('accessToken');
+  const [ expenses, setExpense ] = useState([]);
+  const [loading, setLoading] = useState(true); 
 
 
   const fetchExpenses = async () => {
+    setLoading(true);
     try {
       const response = await fetch(
         `${Base_URL}/api/v1/expenses/`,{
           method: "GET",
-        headers: {
-          "Authorization": `Bearer ${token}`, // Correctly set the header
-          credentials: "include"
+          headers: {
+            "Authorization": `Bearer ${token}`, 
         },
         
       }
@@ -31,21 +32,21 @@ const AddExpenseForm = () => {
       }
       const data = await response.json();
       //console.log(data);
-      const loadedExpenses = [];
-      for (const key in data.data) {
-        loadedExpenses.push({
-          key: data.data[key]._id,
-          id: data.data[key]._id,
-          amount: data.data[key].amount,
-          description: data.data[key].description,
-          date: data.data[key].date,
-          category: data.data[key].category,
-        });
-      }
+      const loadedExpenses = data.data.map(expense => ({
+        key: expense._id,
+        id: expense._id,
+        amount: expense.amount,
+        description: expense.description,
+        date: expense.date,
+        category: expense.category,
+      }));
       //console.log(loadedExpenses)
       dispatch(setExpenses(loadedExpenses));
+      setExpense(loadedExpenses);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,7 +61,11 @@ const AddExpenseForm = () => {
       <div className="new-expense">
         <ExpensesFilter />
         <ExpenseChart />
-        <ExpenseList fetchExpenses={fetchExpenses} />
+        {loading ? (
+          <p>Loading...</p> // Placeholder for loading state
+        ) : (
+          <ExpenseList expenses={expenses} loading={loading} />
+        )}
       </div>
     </>
   );

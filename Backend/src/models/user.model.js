@@ -16,10 +16,10 @@ const userSchema = new mongoose.Schema({
         type:String
     },
     otp: { 
-        type: String // Store hashed OTP
+        type: String
     },
     otpExpiry: { 
-        type: Date,  // Expiry time for OTP
+        type: Date,
         default: null 
     }
 },{

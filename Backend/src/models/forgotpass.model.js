@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const forgotPasswordSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // Reference to the User model
+    ref: 'User', 
     required: true,
   },
   resetToken: {
@@ -18,5 +18,4 @@ const forgotPasswordSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// Create a model from the schema
 export const ForgotPassword = mongoose.model('ForgotPassword', forgotPasswordSchema);

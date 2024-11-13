@@ -6,16 +6,18 @@ import EditExpenseForm from "./EditExpenseForm";
 import { Base_URL } from "../UI/Helper";
 
 const ExpenseList = ({ fetchExpenses }) => {
-  const [expenseCount, setExpenseCount] = useState(5); // Default to 5 expenses
+  const [expenseCount, setExpenseCount] = useState(5); 
   const dispatch = useDispatch();
   const expenses = useSelector((state) => state.expenses.expenses);
   const isEditing = useSelector((state) => state.expenses.isEditing);
   const editingExpense = useSelector((state) => state.expenses.editingExpense);
 
   const filteredYear = useSelector((state) => state.filter.filteredYear);
+
+
   const filteredExpenses = expenses.filter((expense) => {
     const expenseDate = new Date(expense.date);
-    return expenseDate.getFullYear().toString() === filteredYear;
+    return expenseDate.getFullYear() === filteredYear;
   }).slice(0, expenseCount);
   const token = useSelector(state => state.auth.token);
 

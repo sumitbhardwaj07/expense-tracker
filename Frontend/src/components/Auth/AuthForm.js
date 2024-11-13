@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import classes from "./AuthForm.module.css";
-import { login } from "../../store/authReducer";
+import { login, showForgotPassword } from "../../store/authReducer";
 import { Base_URL } from "../UI/Helper";
+import ForgotPassword from "./ForgotPassword";
 
 const AuthForm = () => {
   const emailInputRef = useRef();
@@ -16,6 +17,7 @@ const AuthForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const showModal = useSelector(state => state.auth.showForgotPasswordModal);
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
@@ -23,6 +25,11 @@ const AuthForm = () => {
     setSuccessMessage('');
     setError('');
   };
+
+  const forgotPasswordHandler = () => {
+    dispatch(showForgotPassword());
+  };
+
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -46,6 +53,8 @@ const AuthForm = () => {
         });
         const data = await response.json();
         if (data.success) {
+          localStorage.setItem('accessToken', data.data.accessToken);
+          localStorage.setItem('refreshToken', data.data.refreshToken);
           setSuccessMessage("Login successful!");
           dispatch(login({ token: data.data.accessToken, userId: data.data.user._id, email: data.data.user.email }));
           // Dispatch login action here, e.g.:
@@ -121,6 +130,13 @@ const AuthForm = () => {
           <label htmlFor="password">Your Password</label>
           <input type="password" id="password" required ref={passwordInputRef} disabled={isLoading} />
         </div>
+        {isLogin && <button
+            type="button"
+            className={classes.forgot}
+            onClick={forgotPasswordHandler}
+          >
+            Forgot password?
+          </button>}
         {!isLogin && otpSent && (
           <div className={classes.control}>
             <label htmlFor="otp">OTP</label>
@@ -147,6 +163,7 @@ const AuthForm = () => {
           </button>
         </div>
       </form>
+      {showModal && <ForgotPassword />}
     </section>
   );
 };
