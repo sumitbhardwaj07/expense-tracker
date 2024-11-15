@@ -42,7 +42,7 @@ const ForgotPassword = () => {
       }
 
       // Assuming the backend responds with a success message
-      const data = await response.json();
+      //const data = await response.json();
       alert("An email has been sent to reset your password."); // Notify the user
       dispatch(hideForgotPassword()); // Close the modal
     } catch (error) {
