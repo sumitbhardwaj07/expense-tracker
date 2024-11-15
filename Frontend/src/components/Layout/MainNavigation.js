@@ -16,32 +16,45 @@ const MainNavigation = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`, // Include the token here
         },
       });
       navigate("/auth");
       dispatch(logout());
     } catch (error) {
       console.error("Logout error:", error);
+      // Optionally show error to the user
     }
   };
 
   const fetchWithRefreshToken = async (url, options) => {
     const accessToken = localStorage.getItem('accessToken');
 
-    if (accessToken) {
-      options.headers = {
-        ...options.headers,
-        'Authorization': `Bearer ${accessToken}`,
-      };
+    if (!accessToken) {
+      console.error('No access token found');
+      dispatch(logout());
+      navigate("/auth");
+      return;
     }
+
+    options.headers = {
+      ...options.headers,
+      'Authorization': `Bearer ${accessToken}`,
+    };
 
     const response = await fetch(url, options);
 
     // If the response indicates an expired token, try refreshing it
     if (response.status === 401) {
       const refreshToken = localStorage.getItem('refreshToken');
-      const refreshResponse = await fetch(`${Base_URL}/api/v1/users/refresh-token`, {
+      if (!refreshToken) {
+        console.error('No refresh token found');
+        dispatch(logout());
+        navigate("/auth");
+        return;
+      }
+
+      const refreshResponse = await fetch(`${Base_URL}/api/v1/users/refreshToken`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,9 +66,8 @@ const MainNavigation = () => {
         const data = await refreshResponse.json();
         localStorage.setItem('accessToken', data.accessToken); // Update access token
         options.headers['Authorization'] = `Bearer ${data.accessToken}`; // Retry original request
-        return fetch(url, options); // Retry the original request
+        return fetch(url, options); 
       } else {
-        // Handle refresh token failure (e.g., redirect to login)
         console.error("Failed to refresh token");
         dispatch(logout());
         navigate("/auth");
