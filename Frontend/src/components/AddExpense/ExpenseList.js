@@ -14,10 +14,11 @@ const ExpenseList = ({ fetchExpenses }) => {
 
   const filteredYear = useSelector((state) => state.filter.filteredYear);
 
+  console.log(expenses)
 
   const filteredExpenses = expenses.filter((expense) => {
     const expenseDate = new Date(expense.date);
-    return expenseDate.getFullYear() === filteredYear;
+    return expenseDate.getFullYear() == filteredYear;
   }).slice(0, expenseCount);
   const token = useSelector(state => state.auth.token);
 
@@ -114,6 +115,8 @@ const ExpenseList = ({ fetchExpenses }) => {
     const year = date.getFullYear();
     return { month, day, year };
   };
+
+  console.log(filteredExpenses)
 
   return (
     <div className="expense-list-container">
